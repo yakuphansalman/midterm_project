@@ -12,9 +12,6 @@ window.onload = function(){
 
     /* This function calls only once */
     function start(){
-        /* Background implementation */
-        ctx.fillStyle = "#71D9E2"
-        ctx.fillRect(0, 0, cvs.width, cvs.height);
 
     }
 
@@ -22,9 +19,14 @@ window.onload = function(){
     function update(){
         gm.update();
         
+        /* Background implementation */
+        ctx.fillStyle = "#71D9E2"
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
 
         /* Draw functions */
         gm.player.draw(ctx);
+        gm.enemy.draw(ctx);
+        gm.ground.draw(ctx);
         requestAnimationFrame(update);
     }
 

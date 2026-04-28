@@ -1,28 +1,31 @@
 class GameManager{
     
-    player = new Player("player", 0, 0, 100, "./assets/player/player.png");
+    player = new Player("player", 0, 0, 100, 1.5, "./assets/player/player.png");
     current = this.player;
 
-    enemy = new Enemy("enemy", 300, 0, 100, "");
+    enemy = new Enemy("enemy", 300, 0, 100, 0.8, "./assets/enemy/enemy.png");
+
+    ground = new Obstacle(0, 700, 1280, 20);
 
     allEntity = [this.player, this.enemy];
 
     //Checking inputs
     checkInput(){
         if(keys.KeyR){
-            for(let i=0; i<this.allEntity; i++){
+            for(let i=0; i<this.allEntity.length; i++){
                 this.allEntity[i].rewind();
-                console.log("rewind");
             }
+            console.log("rewind");
+            
         }
         else{
             if(keys.KeyA){
                 this.current.move(-1, 0);
-                console.log("left");
+                console.log(this.current.posX);
             }
             if(keys.KeyD){
                 this.current.move(1, 0);
-                console.log("right");
+                console.log(this.current.posX);
             }
 
             for(let i=0; i<this.allEntity.length; i++){

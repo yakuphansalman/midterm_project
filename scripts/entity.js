@@ -1,24 +1,24 @@
-class Entity{
-    posX = 0;
-    posY = 0;
-    name = "Entity";
+class Entity extends GameObject{
     health = 100;
+    velocity = 1.0;
 
     img = new Image();
     
     width = this.img.width;
     length = this.img.length;
 
-    constructor(name,posX, posY, health){
+    constructor(name,posX, posY, health, velocity){
+        super();
         this.name = name;
         this.posX = posX;
         this.posY = posY;
         this.health = health;
+        this.velocity = velocity;
     }
     
     move(dx, dy){
-        this.x += this.posX;
-        this.y += this.posy;
+        this.posX += dx*this.velocity;
+        this.posY += dy;
     }
 
     draw(ctx){
