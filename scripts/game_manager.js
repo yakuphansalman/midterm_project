@@ -20,11 +20,13 @@ class GameManager{
         }
         else{
             if(keys.KeyA){
-                this.current.move(-1, 0);
+                this.current.applyForce(-1,0);
+                //this.current.move(-1, 0);
                 console.log(this.current.posX);
             }
             if(keys.KeyD){
-                this.current.move(1, 0);
+                this.current.applyForce(1,0);
+                //this.current.move(1, 0);
                 console.log(this.current.posX);
             }
 
@@ -88,7 +90,12 @@ class GameManager{
 
     update(){
         this.checkInput();
+        
+        /* Physics calls */
 
+        this.allEntity.forEach(entity => {
+            entity.physics.update();
+        });
     }
 
     

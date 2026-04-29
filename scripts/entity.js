@@ -7,6 +7,8 @@ class Entity extends GameObject{
     width = this.img.width;
     length = this.img.length;
 
+    physics = new Physics(this, 0.8, 0.9, 10.0, 1.0);
+
     constructor(name,posX, posY, health, velocity){
         super();
         this.name = name;
@@ -15,7 +17,9 @@ class Entity extends GameObject{
         this.health = health;
         this.velocity = velocity;
     }
-    
+    applyForce(forceX, forceY){
+        this.physics.applyForce(forceX, forceY);
+    }
     move(dx, dy){
         this.posX += dx*this.velocity;
         this.posY += dy;
