@@ -1,6 +1,6 @@
 class Entity extends GameObject{
     health = 100;
-    velocity = 1.0;
+    velocity = 1.0;//Has to remove later
 
     img = new Image();
     
@@ -21,7 +21,7 @@ class Entity extends GameObject{
         this.physics.applyForce(forceX, forceY);
     }
     move(dx, dy){
-        this.posX += dx*this.velocity;
+        this.posX += dx;
         this.posY += dy;
     }
 

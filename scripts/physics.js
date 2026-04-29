@@ -18,7 +18,12 @@ class Physics{
         this.accelerationY += forceY;
     }
 
+    checkCollision(){
+    }
+
     update(){
+
+        this.checkCollision();
         // Increase velocity by acceleration
         this.velocityX += this.accelerationX;
         this.velocityY += this.accelerationY;

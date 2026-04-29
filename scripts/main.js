@@ -7,9 +7,6 @@ var gm;
 
 window.onload = function(){
 
-    //Load a game manager
-    gm = new GameManager();
-
     /* This function calls only once */
     function start(){
 
@@ -17,16 +14,22 @@ window.onload = function(){
 
     /* This function repeats itself */
     function update(){
-        gm.update();
+        GameManager.update();
         
         /* Background implementation */
         ctx.fillStyle = "#71D9E2"
         ctx.fillRect(0, 0, cvs.width, cvs.height);
 
         /* Draw functions */
-        gm.player.draw(ctx);
-        gm.enemy.draw(ctx);
-        gm.ground.draw(ctx);
+        GameManager.allEntities.forEach(element => {
+            element.draw(ctx);
+        });
+
+        GameManager.allObstacles.forEach(element =>{
+            element.draw(ctx);
+        });
+
+
         requestAnimationFrame(update);
     }
 

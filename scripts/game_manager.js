@@ -1,19 +1,25 @@
 class GameManager{
     
-    player = new Player("player", 0, 0, 100, 1.5, "./assets/player/player.png");
-    current = this.player;
+    static current;
+    
+    static allEntities = [];
 
-    enemy = new Enemy("enemy", 300, 0, 100, 0.8, "./assets/enemy/enemy.png");
+    static allObstacles = [];
 
-    ground = new Obstacle(0, 700, 1280, 20);
+    static addEntity(entity){
+        this.allEntities.push(entity);
+    }
 
-    allEntity = [this.player, this.enemy];
+    
+    static addObstacle(obstacle){
+        this.allObstacles.push(obstacle);
+    }
 
     //Checking inputs
-    checkInput(){
+    static checkInput(){
         if(keys.KeyR){
-            for(let i=0; i<this.allEntity.length; i++){
-                this.allEntity[i].rewind();
+            for(let i=0; i<this.allEntities.length; i++){
+                this.allEntities[i].rewind();
             }
             console.log("rewind");
             
@@ -29,9 +35,15 @@ class GameManager{
                 //this.current.move(1, 0);
                 console.log(this.current.posX);
             }
+            if(keys.KeyW){
+                this.current.applyForce(0,-1);
+            }
+            if(keys.KeyS){
+                this.current.applyForce(0,1);
+            }
 
-            for(let i=0; i<this.allEntity.length; i++){
-                this.allEntity[i].saveState();
+            for(let i=0; i<this.allEntities.length; i++){
+                this.allEntities[i].saveState();
             }
         }
 
@@ -88,12 +100,12 @@ class GameManager{
         
     }
 
-    update(){
+    static update(){
         this.checkInput();
         
         /* Physics calls */
 
-        this.allEntity.forEach(entity => {
+        this.allEntities.forEach(entity => {
             entity.physics.update();
         });
     }

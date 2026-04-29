@@ -8,6 +8,8 @@ class Obstacle extends GameObject{
         this.posY = posY;
         this.width = width;
         this.height = height;
+
+        GameManager.addObstacle(this);
     }
 
     draw(ctx){
