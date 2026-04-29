@@ -9,29 +9,33 @@ window.onload = function(){
 
     /* This function calls only once */
     function start(){
-
+        GameManager.initScene();
     }
 
     /* This function repeats itself */
     function update(){
-        GameManager.update();
-        
+        GameManager.update(ctx);
+
         /* Background implementation */
         ctx.fillStyle = "#71D9E2"
         ctx.fillRect(0, 0, cvs.width, cvs.height);
-
-        /* Draw functions */
+        
+        /* Entity updates */
         GameManager.allEntities.forEach(element => {
             element.draw(ctx);
+            element.faceForward();
         });
 
+        /* Obstacle updates */
         GameManager.allObstacles.forEach(element =>{
             element.draw(ctx);
         });
 
+        GameManager.drawConnectionLine(ctx);
 
         requestAnimationFrame(update);
     }
+ 
 
     start();
     update();

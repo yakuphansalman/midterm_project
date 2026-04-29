@@ -9,6 +9,7 @@ class Obstacle extends GameObject{
         this.width = width;
         this.height = height;
 
+        GameManager.addGameObject(this);
         GameManager.addObstacle(this);
     }
 

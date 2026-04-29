@@ -7,6 +7,8 @@ class Entity extends GameObject{
     width = 0;
     height = 0;
 
+    facingRight = true;
+
     physics = new Physics(this, 0.8, 0.9, 10.0, 1.0);
 
     constructor(name,posX, posY, health, velocity){
@@ -26,7 +28,24 @@ class Entity extends GameObject{
     }
 
     draw(ctx){
-        ctx.drawImage(this.img, this.posX, this.posY);
+        ctx.save();
+
+        ctx.translate(this.posX + (this.width/2), this.posY + (this.height/2));
+        let scaleX = this.facingRight ? 1: -1;
+        ctx.scale(scaleX, 1);
+        ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
+
+        ctx.restore();
+    }
+
+    // Face forward
+    faceForward(){
+        if(this.physics.velocityX > 0.1){
+            this.facingRight = true;
+        }
+        else if(this.physics.velocityX < -0.1){
+            this.facingRight = false;
+        }
     }
 
     stateHistory = [];  // Array to store past states

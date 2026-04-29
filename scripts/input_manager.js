@@ -4,6 +4,11 @@ const keys = {
     KeyS: false,
     KeyD: false,
     KeyR: false,
+    KeyZ: false,
+    ArrowUp: false,
+    ArrowLeft: false,
+    ArrowDown: false,
+    ArrowRight: false,
     Space: false
 };
 

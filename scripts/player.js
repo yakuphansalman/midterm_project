@@ -4,6 +4,9 @@ class Player extends Entity{
         this.img.src = src;
         this.width = this.img.width;
         this.height = this.img.height;
+        
+        GameManager.addGameObject(this);
         GameManager.addEntity(this);
+        GameManager.player = this;
     }
 }
