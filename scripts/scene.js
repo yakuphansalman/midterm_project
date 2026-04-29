@@ -4,4 +4,4 @@
     new Enemy("enemy", 300, 0, 100, 0.8, "./assets/enemy/enemy.png");
     new Enemy("enemy2", 500, 1, 100, 1, "./assets/enemy/enemy.png");
     /* Add obstacles in the scene */
-    new Obstacle(0, 700, 1280, 20);
+    new Obstacle(0, 600, 1280, 120);

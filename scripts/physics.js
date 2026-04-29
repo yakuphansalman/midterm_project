@@ -19,11 +19,68 @@ class Physics{
     }
 
     checkCollision(){
+        
+        GameManager.allObstacles.forEach(obstacle => {
+            const ent_l = this.entity.posX;
+            const ent_r = this.entity.posX + this.entity.width;
+            const ent_t = this.entity.posY;
+            const ent_b = this.entity.posY + this.entity.height;
+
+            const obs_l = obstacle.posX;
+            const obs_r = obstacle.posX + obstacle.width;
+            const obs_t = obstacle.posY;
+            const obs_b = obstacle.posY + obstacle.height;
+
+            
+
+
+            // Colliding condition
+            let isColliding = ent_r > obs_l && ent_l < obs_r && ent_b > obs_t && ent_t < obs_b;
+            
+            if(isColliding){
+                console.log("Collided");
+                let delta = [
+                    obs_r - ent_r,
+                    ent_l - obs_l,
+                    obs_b - ent_b,
+                    obs_t - ent_t
+                ]
+                for(let i = 0; i < delta.length; i++){
+                    delta[i] = Math.abs(delta[i]);
+                }
+                // Get which side is closer
+                let minDelta = Math.min(...delta);
+                let index = delta.indexOf(minDelta);
+                console.log(index);
+                //HATALI
+                // Left
+                if(index === 0){
+                    this.entity.posX = obs_l - this.entity.width;
+                    this.velocityX = 0;
+                }
+                // Right
+                if(index === 1){
+                    this.entity.posX = obs_r;
+                    this.velocityX = 0;
+                }
+                // Top
+                if(index === 2){
+                    this.entity.posY = obs_t - this.entity.height;
+                    this.velocityY = 0;
+                }
+                // Bottom
+                if(index === 3){
+                    this.entity.posY = obs_b;
+                    this.velocityY = 0;
+                }
+                this.entity.posY = obs_t - this.entity.height;
+            }
+        });
     }
 
     update(){
+        //this.applyForce(0, 0.2);
 
-        this.checkCollision();
         // Increase velocity by acceleration
         this.velocityX += this.accelerationX;
         this.velocityY += this.accelerationY;
@@ -47,6 +104,8 @@ class Physics{
         // Reset the acceleration
         this.accelerationX = 0;
         this.accelerationY = 0;
+
+        this.checkCollision();
     }
 
 

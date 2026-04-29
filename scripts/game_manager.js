@@ -28,12 +28,10 @@ class GameManager{
             if(keys.KeyA){
                 this.current.applyForce(-1,0);
                 //this.current.move(-1, 0);
-                console.log(this.current.posX);
             }
             if(keys.KeyD){
                 this.current.applyForce(1,0);
                 //this.current.move(1, 0);
-                console.log(this.current.posX);
             }
             if(keys.KeyW){
                 this.current.applyForce(0,-1);

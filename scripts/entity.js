@@ -4,8 +4,8 @@ class Entity extends GameObject{
 
     img = new Image();
     
-    width = this.img.width;
-    length = this.img.length;
+    width = 0;
+    height = 0;
 
     physics = new Physics(this, 0.8, 0.9, 10.0, 1.0);
 
