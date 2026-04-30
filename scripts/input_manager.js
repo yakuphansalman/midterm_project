@@ -5,6 +5,7 @@ const keys = {
     KeyD: false,
     KeyR: false,
     KeyZ: false,
+    KeyE: false,
     ArrowUp: false,
     ArrowLeft: false,
     ArrowDown: false,

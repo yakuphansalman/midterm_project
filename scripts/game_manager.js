@@ -56,9 +56,14 @@ class GameManager{
             }
             if(keys.KeyA){
                 this.current.applyForce(-1,0);
+                this.current.checkFlip();
             }
             if(keys.KeyD){
                 this.current.applyForce(1,0);
+                this.current.checkFlip();
+            }
+            if(keys.KeyE){
+                this.current.attack(40.0);
             }
             /* JumpLock prevents constant jumps 
                IsGrouned checks the current character is grounded or not
@@ -173,7 +178,6 @@ class GameManager{
         }
         return closestTarget;
     }
-
     
 
     static drawConnectionLine(ctx) {
@@ -184,6 +188,8 @@ class GameManager{
             let pY = this.current.posY + (this.current.height / 2);
             let eX = target.posX + (target.width / 2);
             let eY = target.posY + (target.height / 2);
+            pX-= Camera.posX; pY += Camera.posY;
+            eX-= Camera.posX; eY += Camera.posY;
 
             ctx.beginPath();
             ctx.moveTo(pX, pY);

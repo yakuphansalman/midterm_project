@@ -1,18 +1,22 @@
 class Camera{
 
-    static offsetX = 640.0; 
-    static offsetY = 350.0;
+    static posX = 0.0; static posY = 0.0;
 
-    static move(dx, dy){
-        GameManager.allGameObjects.forEach(go => {
-            go.move(-dx,-dy);
-        });
-
+    static offsetX = -100.0; 
+    static offsetY = -200.0;
+    static move(posX, posY){
+        this.posX += posX;
+        this.posY += posY;
     }
     static focus(entity){
-        let posX = entity.posX - this.offsetX;
-        let posY = entity.posY - this.offsetY;
-        console.log(posX);
-        this.move(posX, posY);
+        /*
+        let targetX = entity.posX - this.offsetX;
+        let targetY = entity.posY - this.offsetY;
+
+        let lerpSpeed = 0.1;
+
+        this.posX += (targetX - this.posX)*lerpSpeed;
+        this.posY += (targetY - this.posY)*lerpSpeed;
+        */
     }
 }

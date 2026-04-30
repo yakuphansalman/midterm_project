@@ -22,7 +22,6 @@ window.onload = function(){
         /* Entity updates */
         GameManager.allEntities.forEach(element => {
             element.draw(ctx);
-            element.faceForward();
         });
 
         /* Obstacle updates */
