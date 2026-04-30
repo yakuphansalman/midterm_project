@@ -7,44 +7,39 @@ class Entity extends GameObject{
     width = 0;
     height = 0;
 
-    facingRight = true;
+    facingRight = 1;
 
-    physics = new Physics(this, 0.8, 0.9, 10.0, 1.0);
+    physics = new Physics(this, 0.9, 0.5, 10.0, 1.0);
 
-    constructor(name,posX, posY, health, velocity){
+    constructor(name,posX, posY, health, speedX){
         super();
         this.name = name;
         this.posX = posX;
         this.posY = posY;
         this.health = health;
-        this.velocity = velocity;
+        this.speedX = speedX;
     }
     applyForce(forceX, forceY){
+        forceX*=0.1*this.speedX;
         this.physics.applyForce(forceX, forceY);
-    }
-    move(dx, dy){
-        this.posX += dx;
-        this.posY += dy;
     }
 
     draw(ctx){
         ctx.save();
 
         ctx.translate(this.posX + (this.width/2), this.posY + (this.height/2));
-        let scaleX = this.facingRight ? 1: -1;
-        ctx.scale(scaleX, 1);
+        ctx.scale(this.facingRight, 1);
         ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
 
         ctx.restore();
     }
-
-    // Face forward
+    
     faceForward(){
         if(this.physics.velocityX > 0.1){
-            this.facingRight = true;
+            this.facingRight = 1;
         }
         else if(this.physics.velocityX < -0.1){
-            this.facingRight = false;
+            this.facingRight = -1;
         }
     }
 

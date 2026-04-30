@@ -2,8 +2,6 @@
 var cvs = document.getElementById('canvas');
 var ctx = cvs.getContext('2d');
 
-var gm;
-
 
 window.onload = function(){
 
@@ -14,6 +12,7 @@ window.onload = function(){
 
     /* This function repeats itself */
     function update(){
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
         GameManager.update(ctx);
 
         /* Background implementation */

@@ -8,6 +8,7 @@ class Physics{
         this.accelerationY = 0;
 
         this.isGrounded = false;
+        this.jumpLock = false;
 
         this.mass = mass;
         this.frictionX = frictionX;
@@ -21,24 +22,30 @@ class Physics{
     }
 
     checkCollision(){
+        this.isGrounded = false;
         
         GameManager.allObstacles.forEach(obstacle => {
-            const ent_l = this.entity.posX;
-            const ent_r = this.entity.posX + this.entity.width;
-            const ent_t = this.entity.posY;
-            const ent_b = this.entity.posY + this.entity.height;
+            let ent_l = this.entity.posX;
+            let ent_r = this.entity.posX + this.entity.width;
+            let ent_t = this.entity.posY;
+            let ent_b = this.entity.posY + this.entity.height;
 
-            const obs_l = obstacle.posX;
-            const obs_r = obstacle.posX + obstacle.width;
-            const obs_t = obstacle.posY;
-            const obs_b = obstacle.posY + obstacle.height;
-
-            
-
+            let obs_l = obstacle.posX;
+            let obs_r = obstacle.posX + obstacle.width;
+            let obs_t = obstacle.posY;
+            let obs_b = obstacle.posY + obstacle.height;
 
             // Colliding condition
-            let isColliding = ent_r > obs_l && ent_l < obs_r && ent_b > obs_t && ent_t < obs_b;
+            let isCollidingX =  ent_r > obs_l && ent_l < obs_r;
+            let isCollidingY = ent_b > obs_t && ent_t < obs_b;
+            let isColliding = isCollidingX && isCollidingY;
+
             
+            /* Prevent the ground jitter */
+            let tol = 2;
+            let fixedY = ent_b >= (obs_t - 1) && ent_b <= (obs_t + tol);
+            this.isGrounded = !this.isGrounded ? isCollidingX && fixedY : this.isGrounded;
+
             if(isColliding){
                 let delta = [
                     ent_r - obs_l,
@@ -52,9 +59,6 @@ class Physics{
                 // Get which side is closer
                 let minDelta = Math.min(...delta);
                 let index = delta.indexOf(minDelta);
-
-                this.isGrounded = index === 2;
-
                 // Left
                 if(index === 0){
                     this.entity.posX = obs_l - this.entity.width;
@@ -69,7 +73,6 @@ class Physics{
                 if(index === 2){
                     this.entity.posY = obs_t - this.entity.height;
                     this.velocityY = 0;
-                    this.isGrounded = true;
                 }
                 // Bottom
                 if(index === 3){
@@ -77,15 +80,12 @@ class Physics{
                     this.velocityY = 0;
                 }
             }
-            else{
-                this.isGrounded = false;
-            }
         });
     }
 
     update(){
         // Apply gravity
-        this.applyForce(0, 0.3);
+        this.applyForce(0, 0.5);
 
         // Increase velocity by acceleration
         this.velocityX += this.accelerationX;
@@ -96,8 +96,8 @@ class Physics{
         this.velocityY = (this.velocityY > this.maxSpeed) ? this.maxSpeed : (this.velocityY < -this.maxSpeed) ? -this.maxSpeed : this.velocityY;
 
         //Apply friction
-        this.velocityX *= this.mass*this.frictionX;
-        this.velocityY *= this.mass*this.frictionY;
+        this.velocityX *= this.frictionX;
+        this.velocityY *= this.frictionY;
 
         // Set minimum velocity treshold
         if(Math.abs(this.velocityX) < 0.1) this.velocityX = 0;

@@ -1,13 +1,13 @@
 class GameManager{
     
+    static camera;
     static current;
+    static player;
     
     static allGameObjects = [];
     static allEntities = [];
     static allObstacles = [];
     static allEnemies = [];
-
-    static player;
 
     static addGameObject(go){
         this.allGameObjects.push(go);
@@ -29,11 +29,11 @@ class GameManager{
     static initScene(){
         this.player = new Player("player", 0, 0, 100, 1.5, "./assets/player/player.png");
         this.current = this.player;
-        this.enemy = new Enemy("enemy", 300, 0, 100, 0.8, "./assets/enemy/enemy.png");
-        new Enemy("enemy2", 500, 1, 100, 1, "./assets/enemy/enemy.png");
+        this.enemy = new Enemy("enemy", 300, 0, 100, 1.2, "./assets/enemy/enemy.png");
+        new Enemy("enemy2", 500, 1, 100, 1.2, "./assets/enemy/enemy.png");
         
         new Obstacle(0, 600, 1280, 120);
-        new Obstacle(500, 400, 500, 320);
+        new Obstacle(500, 550, 500, 170);
         new Obstacle(0, 250, 200, 200);
 
     }
@@ -47,18 +47,29 @@ class GameManager{
             
         }
         else{
-            if(keys.KeyA){
-                this.current.applyForce(-1,0);
-            }
-            if(keys.KeyD){
-                this.current.applyForce(1,0);
-            }
+            /* Movement Controls */
             if(keys.KeyW){
                 this.current.applyForce(0,-1);
             }
             if(keys.KeyS){
                 this.current.applyForce(0,1);
             }
+            if(keys.KeyA){
+                this.current.applyForce(-1,0);
+            }
+            if(keys.KeyD){
+                this.current.applyForce(1,0);
+            }
+            /* JumpLock prevents constant jumps 
+               IsGrouned checks the current character is grounded or not
+               Both condition is for jump the character */
+            
+            if(keys.Space){
+                if(this.current.physics.isGrounded && !this.current.physics.jumpLock){
+                    this.current.physics.applyForce(0, -300);
+                }
+                this.current.physics.jumpLock = true;
+            } else if(!keys.Space){ this.current.physics.jumpLock = false;}
 
             for(let i=0; i<this.allEntities.length; i++){
                 this.allEntities[i].saveState();
@@ -77,7 +88,6 @@ class GameManager{
         /* CAMERA */
 
         if(keys.ArrowLeft){
-            console.log("CAMERA LEFT");
             Camera.move(-0.5, 0);
         }
         if(keys.ArrowRight){
@@ -187,11 +197,11 @@ class GameManager{
     static update(ctx){
         this.checkInput();
         this.drawConnectionLine(ctx);
+        Camera.focus(this.current);
 
         /* Physics calls */
 
         this.allEntities.forEach(entity => {
-            
             entity.physics.update();
         });
     }
