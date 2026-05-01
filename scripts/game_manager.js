@@ -1,37 +1,37 @@
-class GameManager{
-    
+class GameManager {
+
     static camera;
     static current;
     static player;
-    
+
     static allGameObjects = [];
     static allEntities = [];
     static allObstacles = [];
     static allEnemies = [];
 
-    static addGameObject(go){
+    static addGameObject(go) {
         this.allGameObjects.push(go);
     }
 
-    static addEntity(entity){
+    static addEntity(entity) {
         this.allEntities.push(entity);
     }
 
-    static addEnemy(enemy){
+    static addEnemy(enemy) {
         this.allEnemies.push(enemy);
     }
-    
-    static addObstacle(obstacle){
+
+    static addObstacle(obstacle) {
         this.allObstacles.push(obstacle);
     }
 
-    
-    static initScene(){
+
+    static initScene() {
         this.player = new Player("player", 0, 0, 100, 1.5, "./assets/player/player.png");
         this.current = this.player;
         this.enemy = new Enemy("enemy", 300, 0, 100, 1.2, "./assets/enemy/enemy.png");
         new Enemy("enemy2", 500, 1, 100, 1.2, "./assets/enemy/enemy.png");
-        
+
         new Obstacle(0, 600, 1280, 120);
         new Obstacle(500, 550, 500, 170);
         new Obstacle(0, 250, 200, 200);
@@ -39,50 +39,74 @@ class GameManager{
     }
 
     //Checking inputs
-    static checkInput(){
-        if(keys.KeyR){
-            for(let i=0; i<this.allEntities.length; i++){
+    static checkInput() {
+        if (keys.KeyR) {
+            for (let i = 0; i < this.allEntities.length; i++) {
                 this.allEntities[i].rewind();
             }
-            
-        }
-        else{
+        } else {
+            if (!this.current) return;
+
+            let currentState = this.current.currentState;
+            if (currentState === "attack" || currentState === "death") {
+                return;
+            }
+
+            let isMoving = false;
             /* Movement Controls */
-            if(keys.KeyW){
-                this.current.applyForce(0,-1);
+            if (keys.KeyW) {
+                this.current.applyForce(0, -1);
+                isMoving = true;
             }
-            if(keys.KeyS){
-                this.current.applyForce(0,1);
+            if (keys.KeyS) {
+                this.current.applyForce(0, 1);
+                isMoving = true;
             }
-            if(keys.KeyA){
-                this.current.applyForce(-1,0);
+            if (keys.KeyA) {
+                this.current.applyForce(-1, 0);
                 this.current.checkFlip();
+                isMoving = true;
+                if (this.current.physics.isGrounded) {
+                    this.current.changeState("run");
+                }
             }
-            if(keys.KeyD){
-                this.current.applyForce(1,0);
+            if (keys.KeyD) {
+                this.current.applyForce(1, 0);
                 this.current.checkFlip();
+                isMoving = true;
+                if (this.current.physics.isGrounded) {
+                    this.current.changeState("run");
+                }
             }
-            if(keys.KeyE){
+            if (keys.KeyE) {
                 this.current.attack(40.0);
             }
             /* JumpLock prevents constant jumps 
                IsGrounded checks the current character is grounded or not
                Both condition is for jump the character */
-            
-            if(keys.Space){
-                if(this.current.physics.isGrounded && !this.current.physics.jumpLock){
+
+            if (keys.Space) {
+                if (this.current.physics.isGrounded && !this.current.physics.jumpLock) {
                     this.current.physics.applyForce(0, -15);
+                    this.current.changeState("jump");
+                    this.current.physics.isGrounded = false;
                 }
                 this.current.physics.jumpLock = true;
-            } else if(!keys.Space){ this.current.physics.jumpLock = false;}
+            } else if (!keys.Space) { this.current.physics.jumpLock = false; }
 
-            for(let i=0; i<this.allEntities.length; i++){
+            if (!this.current.physics.isGrounded && currentState !== "jump") {
+                this.current.changeState("jump");
+            } else if (this.current.physics.isGrounded && !isMoving) {
+                this.current.changeState("idle");
+            }
+
+            for (let i = 0; i < this.allEntities.length; i++) {
                 this.allEntities[i].saveState();
             }
-            if(keys.KeyZ){
+            if (keys.KeyZ) {
                 let target = this.getClosestVisibleTarget();
-            
-                if(target){
+
+                if (target) {
                     this.current = target;
                 }
 
@@ -92,20 +116,20 @@ class GameManager{
 
         /* CAMERA */
 
-        if(keys.ArrowLeft){
+        if (keys.ArrowLeft) {
             Camera.move(-0.5, 0);
         }
-        if(keys.ArrowRight){
+        if (keys.ArrowRight) {
             Camera.move(0.5, 0);
         }
-        if(keys.ArrowUp){
+        if (keys.ArrowUp) {
             Camera.move(0, 0.5);
         }
-        if(keys.ArrowDown){
+        if (keys.ArrowDown) {
             Camera.move(0, -0.5);
         }
-        
-        
+
+
 
     }
 
@@ -166,10 +190,10 @@ class GameManager{
 
         for (let i = 0; i < possibleTargets.length; i++) {
             let target = possibleTargets[i];
-            
+
             if (this.checkVisibility(this.current, target)) {
                 let dist = this.getDistance(this.current, target);
-                
+
                 if (dist < minDistance) {
                     minDistance = dist;
                     closestTarget = target;
@@ -178,7 +202,7 @@ class GameManager{
         }
         return closestTarget;
     }
-    
+
 
     static drawConnectionLine(ctx) {
         let target = this.getClosestVisibleTarget();
@@ -188,8 +212,8 @@ class GameManager{
             let pY = this.current.posY + (this.current.height / 2);
             let eX = target.posX + (target.width / 2);
             let eY = target.posY + (target.height / 2);
-            pX-= Camera.posX; pY -= Camera.posY;
-            eX-= Camera.posX; eY -= Camera.posY;
+            pX -= Camera.posX; pY -= Camera.posY;
+            eX -= Camera.posX; eY -= Camera.posY;
 
             ctx.beginPath();
             ctx.moveTo(pX, pY);
@@ -200,7 +224,7 @@ class GameManager{
         }
     }
 
-    static update(ctx){
+    static update(ctx) {
         this.checkInput();
         this.drawConnectionLine(ctx);
 
@@ -208,12 +232,19 @@ class GameManager{
 
         this.allEntities.forEach(entity => {
             entity.physics.update();
+
+            if (entity.update) {
+                entity.update();
+            }
+            if (entity.draw) {
+                entity.draw(ctx);
+            }
         });
-        
+
         Camera.focus(this.current);
     }
 
-    
+
 
 }
 
