@@ -19,7 +19,7 @@ class Obstacle extends GameObject{
         ctx.fillStyle = "#e77c29";
 
         let drawX = this.posX - Camera.posX;
-        let drawY = this.posY + Camera.posY;
+        let drawY = this.posY - Camera.posY;
         ctx.fillRect(drawX, drawY, this.width, this.height);
 
         ctx.restore();

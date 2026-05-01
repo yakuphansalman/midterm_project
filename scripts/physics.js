@@ -83,9 +83,13 @@ class Physics{
         });
     }
 
+    velocityMag(){
+        return Math.sqrt(this.velocityX**2 + this.velocityY**2);
+    }
+
     update(){
         // Apply gravity
-        this.applyForce(0, 0.5);
+        this.applyForce(0, 0.20); 
 
         // Increase velocity by acceleration
         this.velocityX += this.accelerationX;

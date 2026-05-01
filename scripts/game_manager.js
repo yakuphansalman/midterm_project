@@ -66,12 +66,12 @@ class GameManager{
                 this.current.attack(40.0);
             }
             /* JumpLock prevents constant jumps 
-               IsGrouned checks the current character is grounded or not
+               IsGrounded checks the current character is grounded or not
                Both condition is for jump the character */
             
             if(keys.Space){
                 if(this.current.physics.isGrounded && !this.current.physics.jumpLock){
-                    this.current.physics.applyForce(0, -300);
+                    this.current.physics.applyForce(0, -15);
                 }
                 this.current.physics.jumpLock = true;
             } else if(!keys.Space){ this.current.physics.jumpLock = false;}
@@ -80,14 +80,14 @@ class GameManager{
                 this.allEntities[i].saveState();
             }
             if(keys.KeyZ){
-            let target = this.getClosestVisibleTarget();
+                let target = this.getClosestVisibleTarget();
             
-            if(target){
-                this.current = target;
-            }
+                if(target){
+                    this.current = target;
+                }
 
-            keys.KeyZ = false;
-        }
+                keys.KeyZ = false;
+            }
         }
 
         /* CAMERA */
@@ -188,8 +188,8 @@ class GameManager{
             let pY = this.current.posY + (this.current.height / 2);
             let eX = target.posX + (target.width / 2);
             let eY = target.posY + (target.height / 2);
-            pX-= Camera.posX; pY += Camera.posY;
-            eX-= Camera.posX; eY += Camera.posY;
+            pX-= Camera.posX; pY -= Camera.posY;
+            eX-= Camera.posX; eY -= Camera.posY;
 
             ctx.beginPath();
             ctx.moveTo(pX, pY);
@@ -203,13 +203,14 @@ class GameManager{
     static update(ctx){
         this.checkInput();
         this.drawConnectionLine(ctx);
-        Camera.focus(this.current);
 
         /* Physics calls */
 
         this.allEntities.forEach(entity => {
             entity.physics.update();
         });
+        
+        Camera.focus(this.current);
     }
 
     

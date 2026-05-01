@@ -10,7 +10,7 @@ class Entity extends GameObject{
 
     facingRight = 1;
 
-    physics = new Physics(this, 0.9, 0.5, 10.0, 1.0);
+    physics = new Physics(this, 0.9, 0.8, 40.0, 1.0);
 
     constructor(name,posX, posY, health, speedX){
         super();
@@ -28,7 +28,7 @@ class Entity extends GameObject{
     draw(ctx){
         ctx.save();
 
-        ctx.translate(this.posX + (this.width/2) - Camera.posX, this.posY + (this.height/2) + Camera.posY);
+        ctx.translate(this.posX + (this.width/2) - Camera.posX, this.posY + (this.height/2) - Camera.posY);
         ctx.scale(this.facingRight, 1);
         ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
 
