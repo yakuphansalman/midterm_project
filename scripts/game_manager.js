@@ -8,6 +8,7 @@ class GameManager{
     static allEntities = [];
     static allObstacles = [];
     static allEnemies = [];
+    static allPatrolPoints = [];
 
     static addGameObject(go){
         this.allGameObjects.push(go);
@@ -25,16 +26,22 @@ class GameManager{
         this.allObstacles.push(obstacle);
     }
 
+    static addPatrolPoint(patrolPoint){
+        this.allPatrolPoints.push(patrolPoint);
+    }
+
     
     static initScene(){
-        this.player = new Player("player", 0, 0, 100, 1.5, "./assets/player/player.png");
+        this.player = new Player("player", 0, 250, 100, 1.5, "./assets/player/player.png");
         this.current = this.player;
-        this.enemy = new Enemy("enemy", 300, 0, 100, 1.2, "./assets/enemy/enemy.png");
-        new Enemy("enemy2", 500, 1, 100, 1.2, "./assets/enemy/enemy.png");
-        
+        new Enemy("enemy", 500, 600, 100, 1.2, 150.0, "./assets/enemy/enemy.png");
+
+        new PatrolPoint("pp", 500, 600);
         new Obstacle(0, 600, 1280, 120);
-        new Obstacle(500, 550, 500, 170);
         new Obstacle(0, 250, 200, 200);
+
+        new Obstacle(800, 550, 400, 70);//Long Obstacle
+        //new Obstacle(800, 580, 400, 20);//Short Obstacle
 
     }
 
@@ -69,12 +76,7 @@ class GameManager{
                IsGrounded checks the current character is grounded or not
                Both condition is for jump the character */
             
-            if(keys.Space){
-                if(this.current.physics.isGrounded && !this.current.physics.jumpLock){
-                    this.current.physics.applyForce(0, -15);
-                }
-                this.current.physics.jumpLock = true;
-            } else if(!keys.Space){ this.current.physics.jumpLock = false;}
+            this.current.jump(15.0, keys.Space);
 
             for(let i=0; i<this.allEntities.length; i++){
                 this.allEntities[i].saveState();
@@ -203,9 +205,15 @@ class GameManager{
     static update(ctx){
         this.checkInput();
         this.drawConnectionLine(ctx);
+        
+
+        // AI Control Calls
+        this.allEnemies.forEach(enemy => {
+            enemy.update();
+        });
+
 
         /* Physics calls */
-
         this.allEntities.forEach(entity => {
             entity.physics.update();
         });

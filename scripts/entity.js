@@ -10,13 +10,10 @@ class Entity extends GameObject{
 
     facingRight = 1;
 
-    physics = new Physics(this, 0.9, 0.8, 40.0, 1.0);
+    physics = new Physics(this, 0.9, 0.8, 10.0, 40.0, 1.0);
 
     constructor(name,posX, posY, health, speedX){
-        super();
-        this.name = name;
-        this.posX = posX;
-        this.posY = posY;
+        super(name, posX, posY);
         this.health = health;
         this.speedX = speedX;
     }
@@ -71,6 +68,17 @@ class Entity extends GameObject{
         }
     }
 
+    jump(force, event){
+        if(event){
+            if(this.physics.isGrounded && !this.physics.jumpLock){
+                this.physics.applyForce(0, -force);
+                console.log("jump");
+            }
+            this.physics.jumpLock = true;
+        } else{
+            this.physics.jumpLock = false;
+        }
+    }
     // Every entity can attack and take damage
 
     lastAttack = Date.now();
@@ -79,7 +87,7 @@ class Entity extends GameObject{
         let cooldown = baseCooldown*(100 -this.attackSpeed)/100;
         let canAttack = Date.now() > (this.lastAttack + cooldown);
 
-        if(Date.now() < (this.lastAttack + cooldown)){ return;}
+        if(!canAttack){ return;}
             
         // Attack animation here
         this.lastAttack = Date.now();

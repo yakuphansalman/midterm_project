@@ -1,5 +1,5 @@
 class Physics{
-    constructor(entity, frictionX = 0.9, frictionY = 0.8, maxSpeed = 10, mass = 1.0){
+    constructor(entity, frictionX = 0.9, frictionY = 0.8, maxSpeedX = 10, maxSpeedY = 10, mass = 1.0){
         this.entity = entity;
 
         this.velocityX = 0;
@@ -9,11 +9,15 @@ class Physics{
 
         this.isGrounded = false;
         this.jumpLock = false;
+        this.collisionDir = -1;
 
         this.mass = mass;
         this.frictionX = frictionX;
         this.frictionY = frictionY;
-        this.maxSpeed = maxSpeed;// Prevents infinite velocity
+
+        // Prevents infinite velocity
+        this.maxSpeed = maxSpeedX;
+        this.maxSpeedY = maxSpeedY;
     }
 
     applyForce(forceX, forceY){
@@ -58,26 +62,27 @@ class Physics{
                 }
                 // Get which side is closer
                 let minDelta = Math.min(...delta);
-                let index = delta.indexOf(minDelta);
-                // Left
-                if(index === 0){
-                    this.entity.posX = obs_l - this.entity.width;
-                    this.velocityX = 0;
-                }
-                // Right
-                if(index === 1){
-                    this.entity.posX = obs_r;
-                    this.velocityX = 0;
-                }
+                this.collisionDir = delta.indexOf(minDelta);
+                
                 // Top
-                if(index === 2){
+                if(this.collisionDir === 2){
                     this.entity.posY = obs_t - this.entity.height;
                     this.velocityY = 0;
                 }
                 // Bottom
-                if(index === 3){
+                if(this.collisionDir === 3){
                     this.entity.posY = obs_b;
                     this.velocityY = 0;
+                }
+                // Left
+                if(this.collisionDir === 0){
+                    this.entity.posX = obs_l - this.entity.width;
+                    this.velocityX = 0;
+                }
+                // Right
+                if(this.collisionDir === 1){
+                    this.entity.posX = obs_r;
+                    this.velocityX = 0;
                 }
             }
         });
@@ -90,6 +95,8 @@ class Physics{
     update(){
         // Apply gravity
         this.applyForce(0, 0.20); 
+
+        this.collisionDir = -1;
 
         // Increase velocity by acceleration
         this.velocityX += this.accelerationX;

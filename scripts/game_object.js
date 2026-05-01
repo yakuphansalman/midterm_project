@@ -1,7 +1,9 @@
 class GameObject{
-    name = "GameObject"
-    posX = 0;
-    posY = 0;
+    constructor(name, x, y){
+        this.name = name;
+        this.posX = x;
+        this.posY = y;
+    }
 
     
     move(dx, dy){
