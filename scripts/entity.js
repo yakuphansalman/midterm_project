@@ -1,21 +1,26 @@
 class Entity extends GameObject{
-    health = 100;
-    damage = 10;
-    attackSpeed = 1.0;
-
     img = new Image();
-    
-    width = 0;
-    height = 0;
 
     facingRight = 1;
 
-    physics = new Physics(this, 0.9, 0.8, 10.0, 40.0, 1.0);
+    physics = new Physics(this, 0.9, 0.8, 5.0, 40.0, 1.0);
 
-    constructor(name,posX, posY, health, speedX){
+    constructor(name,posX, posY, health, speedX, damage, attackSpeed, attackRange, visionRange,src){
         super(name, posX, posY);
+        this.img.src = src;
+        this.width = this.img.width;
+        this.height = this.img.height;
         this.health = health;
         this.speedX = speedX;
+        this.damage = damage;
+        this.attackSpeed = attackSpeed;
+        this.attackRange = attackRange;
+        this.visionRange = visionRange;
+        this.posY -= this.height;
+
+        this.ai = new AI(this);
+
+        GameManager.addEntity(this);
     }
     applyForce(forceX, forceY){
         forceX*=0.1*this.speedX;
@@ -91,7 +96,6 @@ class Entity extends GameObject{
             
         // Attack animation here
         this.lastAttack = Date.now();
-        
         for(let i = 0; i < GameManager.allEntities.length; i++){
             let target = GameManager.allEntities[i];
             // Pass this target

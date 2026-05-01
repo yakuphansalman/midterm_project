@@ -2,7 +2,6 @@ class GameManager{
     
     static camera;
     static current;
-    static player;
     
     static allGameObjects = [];
     static allEntities = [];
@@ -17,11 +16,6 @@ class GameManager{
     static addEntity(entity){
         this.allEntities.push(entity);
     }
-
-    static addEnemy(enemy){
-        this.allEnemies.push(enemy);
-    }
-    
     static addObstacle(obstacle){
         this.allObstacles.push(obstacle);
     }
@@ -32,11 +26,9 @@ class GameManager{
 
     
     static initScene(){
-        this.player = new Player("player", 0, 250, 100, 1.5, "./assets/player/player.png");
-        this.current = this.player;
-        new Enemy("enemy", 500, 600, 100, 1.2, 150.0, "./assets/enemy/enemy.png");
-
-        new PatrolPoint("pp", 500, 600);
+        this.current = new Entity("player", 0, 250, 100, 1.5, 10, 1, 30, 150, "./assets/player/player.png");
+        new Entity("enemy", 500, 600, 100, 1.5, 1.2, 1, 30, 150,"./assets/enemy/enemy.png");
+        new PatrolPoint(500, 600, 50);
         new Obstacle(0, 600, 1280, 120);
         new Obstacle(0, 250, 200, 200);
 
@@ -157,12 +149,9 @@ class GameManager{
         let minDistance = Infinity;
         let possibleTargets = [];
 
-        if (this.current !== this.player) {
-            possibleTargets.push(this.player);
-        }
-        for (let i = 0; i < this.allEnemies.length; i++) {
-            if (this.current !== this.allEnemies[i]) {
-                possibleTargets.push(this.allEnemies[i]);
+        for (let i = 0; i < this.allEntities.length; i++) {
+            if (this.current !== this.allEntities[i]) {
+                possibleTargets.push(this.allEntities[i]);
             }
         }
 
@@ -179,6 +168,10 @@ class GameManager{
             }
         }
         return closestTarget;
+    }
+
+    static toleratedOverlap(tolerance, entity, target){
+        return (this.getDistance(entity, target) < tolerance);
     }
     
 
@@ -205,17 +198,16 @@ class GameManager{
     static update(ctx){
         this.checkInput();
         this.drawConnectionLine(ctx);
+
+
         
-
-        // AI Control Calls
-        this.allEnemies.forEach(enemy => {
-            enemy.update();
-        });
-
-
-        /* Physics calls */
         this.allEntities.forEach(entity => {
+            /* Physics calls */
             entity.physics.update();
+            /* AI calls */
+            if(entity !== this.current){
+                entity.ai.update();
+            }
         });
         
         Camera.focus(this.current);
