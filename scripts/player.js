@@ -15,13 +15,13 @@ class Player extends Entity {
 
         this.animation = {
             // Format: Path, frameWidth, frameHeight, column, row, totalSquare, speed, loop
-            idle: new animation("./assets/player/Idle.png", 128, 64, 2, 4, 8, 10, true),
-            run: new animation("./assets/player/Run.png", 128, 64, 2, 4, 8, 5, true),
+            idle: new animation( src + "/Idle.png", 128, 64, 2, 4, 8, 10, true),
+            run: new animation( src + "/Run.png", 128, 64, 2, 4, 8, 5, true),
 
-            jump: new animation("./assets/player/Jump.png", 128, 64, 2, 4, 8, 25, false),
-            death: new animation("./assets/player/Death.png", 128, 64, 2, 4, 8, 10, false),
+            jump: new animation( src + "/Jump.png", 128, 64, 2, 4, 8, 25, false),
+            death: new animation( src + "/Death.png", 128, 64, 2, 4, 8, 10, false),
 
-            attack: new animation("./assets/player/Attacks.png", 128, 64, 8, 5, 4, 4, false)
+            attack: new animation( src + "/Attack.png", 128, 64, 8, 5, 4, 4, false)
         };
     }
 }

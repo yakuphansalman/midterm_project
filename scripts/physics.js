@@ -9,6 +9,8 @@ class Physics{
 
         this.isGrounded = false;
         this.jumpLock = false;
+        this.moveable = true;
+        this.stopEndTime = 0;
         this.collisionDir = -1;
 
         this.mass = mass;
@@ -23,6 +25,19 @@ class Physics{
     applyForce(forceX, forceY){
         this.accelerationX += forceX;
         this.accelerationY += forceY;
+    }
+    lastMoved = Date.now();
+    stop(duration){
+        this.moveable = false;
+        this.stopEndTime = Date.now() + duration;
+    }
+
+    checkStop(){
+        if(this.moveable === false){
+            if(Date.now() >= this.stopEndTime){
+                this.moveable = true;
+            }
+        }
     }
 
     checkCollision(){
@@ -93,8 +108,10 @@ class Physics{
     }
 
     update(){
+        if(this.entity.isDead){ return;}
+        this.checkStop();
         // Apply gravity
-        this.applyForce(0, 0.20); 
+        this.applyForce(0, 0.009); 
 
         this.collisionDir = -1;
 
@@ -103,7 +120,9 @@ class Physics{
         this.velocityY += this.accelerationY;
 
         // Apply velocity limit
-        this.velocityX = (this.velocityX > this.maxSpeed) ? this.maxSpeed : (this.velocityX < -this.maxSpeed) ? -this.maxSpeed : this.velocityX;
+        if (Math.abs(this.accelerationX) > 0) {
+            this.velocityX = (this.velocityX > this.maxSpeed) ? this.maxSpeed : (this.velocityX < -this.maxSpeed) ? -this.maxSpeed : this.velocityX;
+        }
         this.velocityY = (this.velocityY > this.maxSpeed) ? this.maxSpeed : (this.velocityY < -this.maxSpeed) ? -this.maxSpeed : this.velocityY;
 
         //Apply friction
@@ -112,7 +131,7 @@ class Physics{
 
         // Set minimum velocity treshold
         if(Math.abs(this.velocityX) < 0.1) this.velocityX = 0;
-        if(Math.abs(this.velocityY) < 0.1) this.velocityY = 0;
+        //if(Math.abs(this.velocityY) < 0.1) this.velocityY = 0;
 
         // Position assignment
         this.entity.posX += this.velocityX;

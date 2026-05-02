@@ -3,11 +3,11 @@ class Entity extends GameObject{
     img = new Image();
     facingRight = 1;
 
-    physics = new Physics(this, 0.9, 0.8, 5.0, 40.0, 1.0);
+    physics = new Physics(this, 0.8, 0.98, 3.5, 140.0, 1.0);
 
     constructor(name,posX, posY, health, speedX, damage, attackSpeed, attackRange, visionRange,src){
         super(name, posX, posY);
-        this.img.src = src;
+        this.img.src = src + "/entity.png";
         this.width = this.img.width;
         this.height = this.img.height;
         this.health = health;
@@ -17,14 +17,34 @@ class Entity extends GameObject{
         this.attackRange = attackRange;
         this.visionRange = visionRange;
         this.posY -= this.height;
+        this.isDead = false;
 
         this.ai = new AI(this);
 
         GameManager.addEntity(this);
+
+        this.animation = {
+            // Format: Path, frameWidth, frameHeight, column, row, totalSquare, speed, loop
+            idle: new animation( src + "/Idle.png", 128, 64, 2, 4, 8, 25, true),
+            run: new animation( src + "/Run.png", 128, 64, 2, 4, 8, 25, true),
+
+            jump: new animation( src + "/Jump.png", 128, 64, 2, 4, 8, 25, false),
+            death: new animation( src + "/Death.png", 128, 64, 2, 2, 4, 25, false),
+
+            attack: new animation( src + "/Attack.png", 128, 64, 5, 1, 5, 25, false)
+        };
     }
+    
 
     changeState(newState) {
         if (this.currentState === newState || this.currentState === "death") { return; }
+
+        if(this.currentState === "attack" && this.animation && this.animation["attack"].isDone){
+            if(newState !== "death"){
+                return;
+            }
+        }
+
 
         this.currentState = newState;
 
@@ -48,9 +68,16 @@ class Entity extends GameObject{
                 }
             }
         }
+
+        if(Math.abs(this.physics.velocityX) < 0.1 && this.physics.isGrounded && this.currentState !== "attack"){
+            this.changeState("idle");
+        }
+        console.log(this.health);
     }
 
     applyForce(forceX, forceY) {
+        if (!this.physics.moveable) { return; }
+
         forceX *= 0.1 * this.speedX;
         this.physics.applyForce(forceX, forceY);
     }
@@ -147,11 +174,12 @@ class Entity extends GameObject{
         }
     }
 
+    
+
     jump(force, event){
         if(event){
             if(this.physics.isGrounded && !this.physics.jumpLock){
                 this.physics.applyForce(0, -force);
-                console.log("jump");
             }
             this.physics.jumpLock = true;
         } else{
@@ -159,15 +187,13 @@ class Entity extends GameObject{
         }
     }
     // Every entity can attack and take damage
-
     lastAttack = Date.now();
-    attack(range){
-        let baseCooldown = 1000;
+    attack(){
+        let baseCooldown = 2000;
         let cooldown = baseCooldown * (100 - this.attackSpeed) / 100;
         let canAttack = Date.now() > (this.lastAttack + cooldown);
 
         if (!canAttack) { return; }
-
         this.changeState("attack");
         this.lastAttack = Date.now();
         
@@ -177,24 +203,40 @@ class Entity extends GameObject{
             let deltaX = target.posX - this.posX;
             let deltaY = target.posY - this.posY;
 
-            if (deltaX * this.facingRight < 0 || deltaY > this.height) { continue; }
+            let maxReach = (this.width/2) + (target.width/2) + this.attackRange;
 
-            if (Math.abs(deltaX) <= range) {
+            let inRangeX = Math.abs(deltaX) <= maxReach;
+            let inRangeY = Math.abs(deltaY) <= this.height;
+
+            let isInFront = (deltaX*this.facingRight) >= 0 || Math.abs(deltaX) < (this.width/2)
+
+            if(inRangeX && inRangeY && isInFront){
                 target.takeDamage(this.damage, this.facingRight);
             }
         }
     }
 
     takeDamage(damage, hitDirection) {
+        console.log("damage taken: " + damage);
         this.health -= damage;
-        if (this.health <= 0) { this.health = 0; }
+        if (this.health <= 0) { 
+            this.health = 0;
+            this.die();
+            return;
+        }
 
-        let force = 10.0;
-        this.physics.applyForce(hitDirection * force, 0);
+        let force = 5.0;
+        this.physics.velocityX = hitDirection * damage* force;
     }
 
     die() {
+        this.isDead = true;
         this.changeState("death");
+        this.physics.stop(1000);
+        setTimeout(() => {
+            this.posX = -1000;
+            this.posY = -1000;
+        }, 1000);
     }
 }
 
