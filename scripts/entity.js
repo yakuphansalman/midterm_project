@@ -3,7 +3,7 @@ class Entity extends GameObject{
     img = new Image();
     facingRight = 1;
 
-    physics = new Physics(this, 0.8, 0.98, 3.5, 140.0, 1.0);
+    physics = new Physics(this, 0.77, 0.98, 3.5, 140.0, 1.0);
 
     constructor(name,posX, posY, health, speedX, damage, attackSpeed, attackRange, visionRange,src){
         super(name, posX, posY);
@@ -39,7 +39,7 @@ class Entity extends GameObject{
     changeState(newState) {
         if (this.currentState === newState || this.currentState === "death") { return; }
 
-        if(this.currentState === "attack" && this.animation && this.animation["attack"].isDone){
+        if(this.currentState === "attack" && this.animation && !this.animation["attack"].isDone){
             if(newState !== "death"){
                 return;
             }
@@ -57,7 +57,7 @@ class Entity extends GameObject{
     }
 
     update() {
-        this.checkFlip();
+        //this.checkFlip();
 
         if (this.animation && this.animation[this.currentState]) {
             this.animation[this.currentState].update();
@@ -72,7 +72,6 @@ class Entity extends GameObject{
         if(Math.abs(this.physics.velocityX) < 0.1 && this.physics.isGrounded && this.currentState !== "attack"){
             this.changeState("idle");
         }
-        console.log(this.health);
     }
 
     applyForce(forceX, forceY) {
@@ -196,7 +195,9 @@ class Entity extends GameObject{
         if (!canAttack) { return; }
         this.changeState("attack");
         this.lastAttack = Date.now();
-        
+
+
+        setTimeout(() =>{
         for(let i = 0; i < GameManager.allEntities.length; i++){
             let target = GameManager.allEntities[i];
             if (this === target) { continue; }
@@ -214,10 +215,11 @@ class Entity extends GameObject{
                 target.takeDamage(this.damage, this.facingRight);
             }
         }
+        }, 500-(this.attackSpeed)*0.5);// Timeout is for animation takeDamage sync
     }
 
+    damageTaken = false;
     takeDamage(damage, hitDirection) {
-        console.log("damage taken: " + damage);
         this.health -= damage;
         if (this.health <= 0) { 
             this.health = 0;
@@ -225,8 +227,9 @@ class Entity extends GameObject{
             return;
         }
 
-        let force = 5.0;
+        let force = 1.0;
         this.physics.velocityX = hitDirection * damage* force;
+        this.damageTaken = true;
     }
 
     die() {
@@ -234,8 +237,10 @@ class Entity extends GameObject{
         this.changeState("death");
         this.physics.stop(1000);
         setTimeout(() => {
-            this.posX = -1000;
-            this.posY = -1000;
+            this.posX = 10000;
+            this.posY = 10000;
+            GameManager.allEntities.pop(this);
+            this.Entity = null;
         }, 1000);
     }
 }

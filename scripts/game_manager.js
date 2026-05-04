@@ -42,45 +42,62 @@ class GameManager {
         */
 
     static initScene(){
-        this.current = new Entity("player", 0, 600, 100, 1.5, 10, 1, 55, 150, "./assets/player");
+        // Player: name, posX, posY, health, speedX, damage, attackSpeed, attackRange, visionRange, src
+        this.current = new Entity("player", 0, 700, 100, 1.5, 10, 1.0, 10, 150, "./assets/player");
 
-        new Obstacle(-500, 800, 1500, 300);
-        new Obstacle(1200, 800, 800, 300);
-        new Obstacle(2300, 800, 2000, 300);
+        // ================= ZEMİN =================
+        // Oyuncunun ve düşmanların üzerinde koşacağı tek parça devasa zemin
+        new Obstacle(-500, 800, 5000, 300);
 
-        new Obstacle(800, 700, 100, 20);
-        new Obstacle(950, 600, 100, 20);
-        new Obstacle(1100, 500, 100, 20);
+        // ================= BÖLGE 1: Parkur ve Küçük Engeller =================
+        // Düşmanların sana koşarken çarpıp üstünden zıplayacağı (maksimum 40-60 birimlik) engeller
+        new Obstacle(400, 760, 50, 40); // Kısa engel
+        new Obstacle(700, 720, 60, 80); // Orta boy basamak
+        new Obstacle(760, 760, 150, 40); // Basamağın uzantısı
 
-        new Obstacle(1400, 450, 500, 40);
-        new Obstacle(1600, 250, 400, 40);
-        new Obstacle(2000, 600, 50, 200);
+        // ================= BÖLGE 2: Arena =================
+        // Düşmanların devriye atacağı geniş ve düz savaş alanı
+        new PatrolPoint(1200, 800, 200); 
 
-        new Obstacle(2500, 550, 300, 30);
-        new Obstacle(2900, 400, 300, 30);
-        new Obstacle(3300, 250, 600, 50);
+        // ================= BÖLGE 3: Düşük Zıplama Terasları =================
+        // Karakterlerin az zıplayabildiğini bildiğimiz için aralarındaki yükseklik farkı sadece 80-100 piksel olan platformlar
+        new Obstacle(1700, 700, 250, 20); 
+        new Obstacle(1850, 600, 250, 20);
+        new Obstacle(1700, 500, 250, 20);
+        new Obstacle(2000, 420, 350, 20); // Keskin nişancı tepesi (Zirve)
 
-        new PatrolPoint(300, 800, 400);
-        new PatrolPoint(1500, 800, 200);
-        new PatrolPoint(1650, 450, 200);
-        new PatrolPoint(1800, 250, 150);
-        new PatrolPoint(2650, 550, 120);
-        new PatrolPoint(3050, 400, 120);
-        new PatrolPoint(3600, 250, 250);
-        new PatrolPoint(3200, 800, 600);
+        // ================= BÖLGE 4: Siperler (Trenches) =================
+        // Düşmanların arasına saklanacağı ve üstünden zıplayarak sana saldıracağı kısa duvarlar
+        new Obstacle(2600, 740, 40, 60);
+        new Obstacle(2900, 740, 40, 60);
 
-        new Entity("enemy", 300, 700, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 600, 700, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 1400, 700, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 1650, 350, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 1800, 150, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 2650, 450, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 3050, 300, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 3500, 150, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 3700, 150, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 2800, 700, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 3400, 700, 100, 1.5, 10, 1, 25, 150, "./assets/player");
-        new Entity("enemy", 3900, 700, 100, 1.5, 10, 1, 25, 150, "./assets/player");
+        // ================= DEVRİYE NOKTALARI =================
+        new PatrolPoint(600, 720, 100); // Basamak üstü devriyesi
+        new PatrolPoint(1800, 700, 100); // 1. Teras devriyesi
+        new PatrolPoint(2150, 420, 150); // Tepe devriyesi
+        new PatrolPoint(2750, 800, 100); // İki siper arası devriye
+
+        // ================= DÜŞMANLAR =================
+        // ŞARTLAR SAĞLANDI: Tüm düşmanlarda speedX = 1.5 ve attackRange = 10
+        // Çeşitlilik için sadece Can, Hasar, Saldırı Hızı ve Görüş Mesafeleri değiştirildi.
+        
+        // 1. Engel Atlayanlar (Bölge 1 - Engellerin üstünden zıplayarak gelecekler)
+        new Entity("enemy", 500, 700, 80, 1.5, 10, 1.0, 10, 300, "./assets/player");
+        
+        // 2. Arena Muhafızları (Bölge 2 - Birlikte takılan ikili)
+        new Entity("enemy", 1100, 700, 100, 1.5, 12, 1.2, 10, 200, "./assets/player");
+        new Entity("enemy", 1300, 700, 100, 1.5, 12, 1.2, 10, 200, "./assets/player");
+
+        // 3. Teras Savunmacıları (Bölge 3 - Yüksekten atlayanlar)
+        new Entity("enemy", 1750, 600, 120, 1.5, 15, 0.8, 10, 150, "./assets/player"); // Alt teras
+        new Entity("enemy", 2150, 300, 150, 1.5, 20, 0.5, 10, 450, "./assets/player"); // Tepe (Seni uzaktan görüp merdivenlerden aşağı zıplayarak inecek)
+
+        // 4. Siper Askerleri (Bölge 4 - Siper duvarlarına çarpıp havadan kılıç indirecekler)
+        new Entity("enemy", 2750, 700, 80, 1.5, 15, 1.5, 10, 150, "./assets/player");
+        new Entity("enemy", 3000, 700, 80, 1.5, 15, 1.5, 10, 200, "./assets/player");
+
+        // 5. Boss / Bölüm Sonu Canavarı (Canı çok yüksek, vuruş hızı yavaş ama affetmez)
+        new Entity("enemy", 3400, 700, 400, 1.5, 30, 0.6, 10, 250, "./assets/player");
     }
 
     //Checking inputs
@@ -275,7 +292,6 @@ class GameManager {
                 entity.draw(ctx);
             }
         });
-
         if(!this.current.isDead){
             Camera.focus(this.current);
         }

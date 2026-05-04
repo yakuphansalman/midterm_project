@@ -111,7 +111,7 @@ class Physics{
         if(this.entity.isDead){ return;}
         this.checkStop();
         // Apply gravity
-        this.applyForce(0, 0.009); 
+        this.applyForce(0, 0.019); 
 
         this.collisionDir = -1;
 

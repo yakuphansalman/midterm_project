@@ -38,13 +38,13 @@ class AI{
             this.entity.applyForce(this.entity.facingRight*this.entity.speedX, 0);
         }
 
-        // Is there an obstacle on the way?
-        // Is it at left or right?
-        let collision = this.entity.physics.collisionDir === 0 || this.entity.physics.collisionDir === 1;
+        if(this.currentState === AI_STATE.PATROL){ return;}
+        let collision = this.entity.physics.collisionDir === 0 || this.entity.physics.collisionDir === 1;// Collided by left or right?
         if(collision && this.entity.physics.isGrounded){
             this.entity.changeState("jump");
-            this.entity.applyForce(0, -15.0);
+            this.entity.applyForce(0, -2.0);
         }
+
     }
     lastKnownPosX = null;
 
@@ -109,14 +109,16 @@ class AI{
         }
         else if(this.currentState === AI_STATE.CHASE){
             if(this.target !== null){
-                this.move(this.target.posX - this.entity.facingRight*(this.target.width / 2));
+                this.move(this.target.posX - this.entity.facingRight*(this.target.width / 2));// Is there an obstacle on the way?
             }
             else if(this.lastKnownPosX !== null){
                 this.move(this.lastKnownPosX);
                 if(Math.abs(this.lastKnownPosX - this.entity.posX - this.entity.width/2) < this.tolerance){
                     this.lastKnownPosX = null;
                 }
+                
             }
+            
             else{
                 this.currentState = AI_STATE.RETURN;
             }
