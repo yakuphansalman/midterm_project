@@ -195,6 +195,7 @@ class Entity extends GameObject{
         if (!canAttack) { return; }
         this.changeState("attack");
         this.lastAttack = Date.now();
+        this.physics.velocityX *= 0.3;
 
 
         setTimeout(() =>{

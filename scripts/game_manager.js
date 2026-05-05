@@ -82,24 +82,33 @@ class GameManager {
         // Çeşitlilik için sadece Can, Hasar, Saldırı Hızı ve Görüş Mesafeleri değiştirildi.
         
         // 1. Engel Atlayanlar (Bölge 1 - Engellerin üstünden zıplayarak gelecekler)
-        new Entity("enemy", 500, 700, 80, 1.5, 10, 1.0, 10, 300, "./assets/player");
+        new Entity("enemy", 500, 700, 80, 1.2, 10, 1.0, 10, 300, "./assets/player");
         
         // 2. Arena Muhafızları (Bölge 2 - Birlikte takılan ikili)
-        new Entity("enemy", 1100, 700, 100, 1.5, 12, 1.2, 10, 200, "./assets/player");
-        new Entity("enemy", 1300, 700, 100, 1.5, 12, 1.2, 10, 200, "./assets/player");
+        //new Entity("enemy", 1100, 700, 100, 1.2, 12, 1.2, 10, 200, "./assets/player");
+        //new Entity("enemy", 1300, 700, 100, 1.2, 12, 1.2, 10, 200, "./assets/player");
 
         // 3. Teras Savunmacıları (Bölge 3 - Yüksekten atlayanlar)
-        new Entity("enemy", 1750, 600, 120, 1.5, 15, 0.8, 10, 150, "./assets/player"); // Alt teras
-        new Entity("enemy", 2150, 300, 150, 1.5, 20, 0.5, 10, 450, "./assets/player"); // Tepe (Seni uzaktan görüp merdivenlerden aşağı zıplayarak inecek)
+        //new Entity("enemy", 1750, 600, 120, 1.2, 15, 0.8, 10, 150, "./assets/player"); // Alt teras
+        //new Entity("enemy", 2150, 300, 150, 1.2, 20, 0.5, 10, 450, "./assets/player"); // Tepe (Seni uzaktan görüp merdivenlerden aşağı zıplayarak inecek)
 
         // 4. Siper Askerleri (Bölge 4 - Siper duvarlarına çarpıp havadan kılıç indirecekler)
-        new Entity("enemy", 2750, 700, 80, 1.5, 15, 1.5, 10, 150, "./assets/player");
-        new Entity("enemy", 3000, 700, 80, 1.5, 15, 1.5, 10, 200, "./assets/player");
+        //new Entity("enemy", 2750, 700, 80, 1.2, 15, 1.5, 10, 150, "./assets/player");
+        //new Entity("enemy", 3000, 700, 80, 1.2, 15, 1.5, 10, 200, "./assets/player");
 
         // 5. Boss / Bölüm Sonu Canavarı (Canı çok yüksek, vuruş hızı yavaş ama affetmez)
-        new Entity("enemy", 3400, 700, 400, 1.5, 30, 0.6, 10, 250, "./assets/player");
+        //new Entity("enemy", 3400, 700, 400, 1.2, 30, 0.6, 10, 250, "./assets/player");
     }
+/*  AI JUMP TEST SCENE*//*
+    static initScene(){
+        this.current = new Entity("player", 350, 625, 100, 1.5, 10, 1.5, 10, 150, "./assets/player");
+        new Entity("player", 350, 700, 100, 1.5, 10, 1.0, 10, 150, "./assets/player");
+        new PatrolPoint(350, 700, 250);
 
+        new Obstacle(0, 700, 1000, 20);
+        new Obstacle(350, 625, 150, 20);
+    }
+*/
     //Checking inputs
     static checkInput() {
         if(this.current.isDead === true){ return;}

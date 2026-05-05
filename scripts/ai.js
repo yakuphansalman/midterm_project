@@ -42,13 +42,17 @@ class AI{
         let collision = this.entity.physics.collisionDir === 0 || this.entity.physics.collisionDir === 1;// Collided by left or right?
         if(collision && this.entity.physics.isGrounded){
             this.entity.changeState("jump");
-            this.entity.applyForce(0, -2.0);
+            this.entity.applyForce(0, -5.0);
+            this.lastKnownHistory--;// Jump only once for every last known position
         }
 
     }
     lastKnownPosX = null;
+    lastKnownHistory = 0;
 
     think(){
+        if(this.lastKnownPosX != null){ this.lastKnownHistory = 2;}
+        else if(this.lastKnownHistory <= 0){ this.lastKnownPosX = null;}
         // Align the position
         this.center = this.entity.posX + (this.entity.width/2);
         // Target has to be null every frame, so if there's no target in the scene or in the sight, this entity will try to chase the unseen
@@ -76,7 +80,7 @@ class AI{
         if(this.target !== null && GameManager.checkVisibility(this.entity, this.target)){
             this.currentState = AI_STATE.CHASE;
             this.lastKnownPosX = this.target.posX + (this.target.width / 2); // Save last known position
-            if(GameManager.toleratedOverlap(this.entity.attackRange + this.entity.width, this.entity, this.target)){
+            if(GameManager.toleratedOverlap(this.entity.width/2, this.entity, this.target)){
                 let directionToTarget = this.target.posX - this.entity.posX;
                 this.entity.facingRight = directionToTarget < 0 ? -1: 1;
                 this.currentState = AI_STATE.ATTACK;
@@ -109,7 +113,13 @@ class AI{
         }
         else if(this.currentState === AI_STATE.CHASE){
             if(this.target !== null){
-                this.move(this.target.posX - this.entity.facingRight*(this.target.width / 2));// Is there an obstacle on the way?
+                let entityCenterY = this.entity.posY - this.entity.height/2;
+                let targetCenterY = this.target.posY - this.target.height/2;
+                if(targetCenterY < entityCenterY && !GameManager.checkVisibility(this.entity, this.target)){
+                    this.entity.jump(15.0, this.entity.physics.isGrounded);
+                    this.lastKnownPosX = null;
+                }
+                this.move(this.target.posX + (this.target.width / 2));
             }
             else if(this.lastKnownPosX !== null){
                 this.move(this.lastKnownPosX);
@@ -118,10 +128,11 @@ class AI{
                 }
                 
             }
-            
             else{
                 this.currentState = AI_STATE.RETURN;
             }
+            
+            console.log(this.lastKnownPosX);
         }
         else if(this.currentState === AI_STATE.PATROL){
             let point = this.getClosestPatrolPoint();
