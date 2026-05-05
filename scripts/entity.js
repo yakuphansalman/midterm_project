@@ -22,7 +22,8 @@ class Entity extends GameObject{
         this.ai = new AI(this);
 
         GameManager.addEntity(this);
-
+        this.animation;
+/*
         this.animation = {
             // Format: Path, frameWidth, frameHeight, column, row, totalSquare, speed, loop
             idle: new animation( src + "/Idle.png", 128, 64, 2, 4, 8, 25, true),
@@ -33,6 +34,7 @@ class Entity extends GameObject{
 
             attack: new animation( src + "/Attack.png", 128, 64, 5, 1, 5, 25, false)
         };
+        */
     }
     
 
