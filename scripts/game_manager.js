@@ -44,7 +44,16 @@ class GameManager {
     static initScene(){
         // Player: name, posX, posY, health, speedX, damage, attackSpeed, attackRange, visionRange, src
         this.current = new Entity("player", 0, 700, 100, 1.5, 10, 1.0, 10, 150, "./assets/entity/knight");
+        this.current.animation = {
+            // Format: Path, frameWidth, frameHeight, column, row, totalSquare, speed, loop
+            idle: new animation( "./assets/entity/knight" + "/Idle.png", 128, 64, 2, 4, 8, 25, true),
+            run: new animation( "./assets/entity/knight" + "/Run.png", 128, 64, 2, 4, 8, 25, true),
 
+            jump: new animation( "./assets/entity/knight" + "/Jump.png", 128, 64, 2, 4, 8, 25, false),
+            death: new animation( "./assets/entity/knight" + "/Death.png", 128, 64, 2, 2, 4, 25, false),
+
+            attack: new animation( "./assets/entity/knight" + "/Attack.png", 128, 64, 5, 1, 5, 25, false)
+        };
         // ================= ZEMİN =================
         // Oyuncunun ve düşmanların üzerinde koşacağı tek parça devasa zemin
         new Obstacle(-500, 800, 5000, 300);
@@ -82,7 +91,16 @@ class GameManager {
         // Çeşitlilik için sadece Can, Hasar, Saldırı Hızı ve Görüş Mesafeleri değiştirildi.
         
         // 1. Engel Atlayanlar (Bölge 1 - Engellerin üstünden zıplayarak gelecekler)
-        new Entity("enemy", 500, 700, 80, 1.2, 10, 1.0, 10, 300, "./assets/entity/knight");
+        new Entity("enemy", 500, 700, 80, 1.5, 10, 1.0, 10, 300, "./assets/entity/samurai").animation = {
+            // Format: Path, frameWidth, frameHeight, column, row, totalSquare, speed, loop
+            idle: new animation( "./assets/entity/samurai" + "/Idle.png", 96, 96, 10, 1, 10, 25, true),
+            run: new animation( "./assets/entity/samurai" + "/Run.png", 96 , 96, 16, 1, 16, 25, true),
+
+            jump: new animation( "./assets/entity/samurai" + "/Jump.png", 96, 96, 10, 1, 10, 25, false),
+            death: new animation( "./assets/entity/samurai" + "/Death.png", 96, 96, 10, 1, 10, 25, false),
+
+            attack: new animation( "./assets/entity/samurai" + "/Attack.png", 96, 96, 7, 1, 7, 10, false)
+        };
         
         // 2. Arena Muhafızları (Bölge 2 - Birlikte takılan ikili)
         //new Entity("enemy", 1100, 700, 100, 1.2, 12, 1.2, 10, 200, "./assets/player");
