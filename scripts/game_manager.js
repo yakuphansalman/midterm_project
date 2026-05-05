@@ -43,7 +43,7 @@ class GameManager {
 
     static initScene(){
         // Player: name, posX, posY, health, speedX, damage, attackSpeed, attackRange, visionRange, src
-        this.current = new Entity("player", 0, 700, 100, 1.5, 10, 1.0, 10, 150, "./assets/player");
+        this.current = new Entity("player", 0, 700, 100, 1.5, 10, 1.0, 10, 150, "./assets/entity/knight");
 
         // ================= ZEMİN =================
         // Oyuncunun ve düşmanların üzerinde koşacağı tek parça devasa zemin
@@ -82,7 +82,7 @@ class GameManager {
         // Çeşitlilik için sadece Can, Hasar, Saldırı Hızı ve Görüş Mesafeleri değiştirildi.
         
         // 1. Engel Atlayanlar (Bölge 1 - Engellerin üstünden zıplayarak gelecekler)
-        new Entity("enemy", 500, 700, 80, 1.2, 10, 1.0, 10, 300, "./assets/player");
+        new Entity("enemy", 500, 700, 80, 1.2, 10, 1.0, 10, 300, "./assets/entity/knight");
         
         // 2. Arena Muhafızları (Bölge 2 - Birlikte takılan ikili)
         //new Entity("enemy", 1100, 700, 100, 1.2, 12, 1.2, 10, 200, "./assets/player");
